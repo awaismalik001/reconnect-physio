@@ -6,6 +6,7 @@ const TherapyType  = require('../models/TherapyType');
 const Patient      = require('../models/Patient');
 const Doctor       = require('../models/Doctor');
 const { formatDoc, formatDocs } = require('../utils/format');
+const { syncPatientPaymentStatus } = require('../utils/patientStatusSync');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -160,6 +161,9 @@ const createSession = async (req, res) => {
       await Appointment.findByIdAndUpdate(appointmentId, { status: 'completed', sessionId: session._id });
     }
 
+    // Auto-update patient paymentStatus to 'paid' if all sessions completed and paid
+    await syncPatientPaymentStatus(patientId);
+
     res.status(201).json({
       message: 'Session recorded successfully.',
       session: formatDoc(session),
@@ -239,6 +243,8 @@ const updateSession = async (req, res) => {
       );
     }
 
+    await syncPatientPaymentStatus(session.patientId);
+
     res.json({ message: 'Session updated successfully.', session: formatDoc(session) });
   } catch (error) {
     console.error('Update session error:', error);
@@ -259,6 +265,8 @@ const deleteSession = async (req, res) => {
 
     // Delete linked finance record
     await Finance.deleteOne({ sessionId: req.params.id });
+
+    await syncPatientPaymentStatus(session.patientId);
 
     res.json({ message: 'Session deleted successfully.' });
   } catch (error) {
@@ -297,6 +305,8 @@ const markSessionPaid = async (req, res) => {
     ]);
 
     if (!session) return res.status(404).json({ message: 'Session not found.' });
+
+    await syncPatientPaymentStatus(session.patientId);
 
     res.json({ message: 'Session marked as paid. Finance record updated.' });
   } catch (error) {

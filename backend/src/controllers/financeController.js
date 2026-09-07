@@ -3,6 +3,7 @@ const Finance           = require('../models/Finance');
 const Session           = require('../models/Session');
 const generateInvoicePDF = require('../utils/pdfGenerator');
 const { formatDoc, formatDocs } = require('../utils/format');
+const { syncPatientPaymentStatus } = require('../utils/patientStatusSync');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -158,6 +159,10 @@ const markCreditPaid = async (req, res) => {
       });
     }
 
+    if (record.patientId) {
+      await syncPatientPaymentStatus(record.patientId._id || record.patientId);
+    }
+
     res.json({ message: 'Credit marked as paid. Converted to income.', record: formatDoc(record) });
   } catch (error) {
     console.error('Mark credit paid error:', error);
@@ -263,6 +268,10 @@ const deleteFinanceRecord = async (req, res) => {
         patientId: record.patientId,
         date: { $gte: dateStart, $lte: dateEnd },
       });
+    }
+
+    if (record.patientId) {
+      await syncPatientPaymentStatus(record.patientId);
     }
 
     res.json({ message: 'Finance record and associated session deleted successfully.' });

@@ -14,7 +14,7 @@ const PatientSchema = new mongoose.Schema(
     totalSessions:    { type: Number, default: 0, min: 0 },
     startDate:        { type: Date, default: null },
     endDate:          { type: Date, default: null },
-    paymentStatus:    { type: String, default: 'pending', enum: ['pending', 'paid', 'partial'] },
+    paymentStatus:    { type: String, default: 'pending', enum: ['pending', 'paid', 'partial', 'credit'] },
     doctorId:         { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', default: null },
     doctorName:       { type: String, default: '' },
     therapyTypeIds:   [{ type: mongoose.Schema.Types.ObjectId, ref: 'TherapyType' }],
