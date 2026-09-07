@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { sessionsAPI, patientsAPI, doctorsAPI, appointmentsAPI } from '../services/api';
 import Layout from '../components/common/Layout';
-import { Plus, Trash2, X, ClipboardList, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { Plus, Trash2, X, ClipboardList, AlertCircle, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
@@ -183,12 +183,6 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
               </FormSelect>
             </div>
             {/* Status explanation */}
-            {paymentStatus === 'paid' && (
-              <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 p-2 rounded-lg">
-                <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                Payment received — Income record will be created automatically.
-              </div>
-            )}
             {paymentStatus === 'credit' && (
               <div className="flex items-center gap-2 text-xs text-red-700 bg-red-50 p-2 rounded-lg">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
