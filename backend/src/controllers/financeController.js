@@ -2,6 +2,7 @@ const mongoose          = require('mongoose');
 const Finance           = require('../models/Finance');
 const Session           = require('../models/Session');
 const generateInvoicePDF = require('../utils/pdfGenerator');
+const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ const getAllFinance = async (req, res) => {
       .sort({ date: -1 })
       .lean();
 
-    res.json(records);
+    res.json(formatDocs(records));
   } catch (error) {
     console.error('Get finance error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -112,7 +113,7 @@ const getCreditRecords = async (req, res) => {
       .populate('sessionId', 'date duration')
       .sort({ date: -1 })
       .lean();
-    res.json(records);
+    res.json(formatDocs(records));
   } catch (error) {
     console.error('Get credit records error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -157,7 +158,7 @@ const markCreditPaid = async (req, res) => {
       });
     }
 
-    res.json({ message: 'Credit marked as paid. Converted to income.', record });
+    res.json({ message: 'Credit marked as paid. Converted to income.', record: formatDoc(record) });
   } catch (error) {
     console.error('Mark credit paid error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -188,7 +189,7 @@ const createFinanceRecord = async (req, res) => {
 
     await record.populate('patientId', 'name');
 
-    res.status(201).json({ message: 'Finance record created.', record });
+    res.status(201).json({ message: 'Finance record created.', record: formatDoc(record) });
   } catch (error) {
     console.error('Create finance error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -223,7 +224,7 @@ const updateFinanceRecord = async (req, res) => {
 
     if (!record) return res.status(404).json({ message: 'Finance record not found.' });
 
-    res.json({ message: 'Finance record updated.', record });
+    res.json({ message: 'Finance record updated.', record: formatDoc(record) });
   } catch (error) {
     console.error('Update finance error:', error);
     res.status(500).json({ message: 'Server error.' });

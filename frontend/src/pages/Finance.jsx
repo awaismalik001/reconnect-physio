@@ -165,7 +165,7 @@ function FinanceModal({ onClose, patients }) {
             <FormSelect label="Associated Patient (Optional)" value={patientId} onChange={(e) => setPatientId(e.target.value)}>
               <option value="">No specific patient</option>
               {patients?.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
+                <option key={p.id || p._id} value={p.id || p._id}>{p.name}</option>
               ))}
             </FormSelect>
           )}
@@ -200,7 +200,7 @@ function CollectCreditModal({ creditRecord, onClose }) {
   const [paymentMethod, setPaymentMethod] = useState('cash');
 
   const mutation = useMutation({
-    mutationFn: () => financeAPI.markCreditPaid(creditRecord.id, { paymentMethod }),
+    mutationFn: () => financeAPI.markCreditPaid(creditRecord.id || creditRecord._id, { paymentMethod }),
     onSuccess: () => {
       toast.success('Credit collected! Converted to Income.');
       qc.invalidateQueries({ queryKey: ['finance'] });
@@ -397,7 +397,7 @@ export default function Finance() {
           >
             <option value="">Select a registered patient...</option>
             {patients?.map((p) => (
-              <option key={p.id} value={p.id}>{p.name} ({p.phone})</option>
+              <option key={p.id || p._id} value={p.id || p._id}>{p.name} ({p.phone})</option>
             ))}
           </select>
           <button
@@ -573,7 +573,7 @@ export default function Finance() {
                             )}
                             <button
                               onClick={() => {
-                                if (window.confirm('Delete this finance entry?')) deleteMutation.mutate(r.id);
+                                if (window.confirm('Delete this finance entry?')) deleteMutation.mutate(r.id || r._id);
                               }}
                               className="p-1.5 hover:bg-red-100 rounded-lg text-red-500"
                             >

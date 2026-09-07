@@ -184,7 +184,7 @@ export default function PatientDetail() {
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {patient.age} years old · {patient.gender} · File No: #{String(patient.id).padStart(4, '0')}
+                {patient.age} years old · {patient.gender} · File No: #{String(patient.id || patient._id || '').slice(-6).toUpperCase()}
               </p>
               <p className="text-xs text-blue-600 font-semibold mt-1">
                 Registered on {format(new Date(patient.createdAt), 'MMMM d, yyyy')}
@@ -302,7 +302,7 @@ export default function PatientDetail() {
                     </a>
                     <button
                       onClick={() => {
-                        if (window.confirm('Delete this document?')) deleteDocMutation.mutate(doc.id);
+                        if (window.confirm('Delete this document?')) deleteDocMutation.mutate(doc.id || doc._id);
                       }}
                       className="text-red-500 hover:bg-red-50 p-1 rounded-lg"
                     >

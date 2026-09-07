@@ -79,14 +79,14 @@ function AppointmentModal({ onClose, patients, doctors }) {
           <FormSelect label="Patient *" value={patientId} onChange={(e) => setPatientId(e.target.value)}>
             <option value="">Select Patient</option>
             {patients?.map((p) => (
-              <option key={p.id} value={p.id}>{p.name} ({p.phone})</option>
+              <option key={p.id || p._id} value={p.id || p._id}>{p.name} ({p.phone})</option>
             ))}
           </FormSelect>
 
           <FormSelect label="Doctor / Therapist *" value={doctorId} onChange={(e) => setDoctorId(e.target.value)}>
             <option value="">Select Doctor</option>
             {doctors?.map((d) => (
-              <option key={d.id} value={d.id}>Dr. {d.name} ({d.specialization})</option>
+              <option key={d.id || d._id} value={d.id || d._id}>Dr. {d.name} ({d.specialization})</option>
             ))}
           </FormSelect>
 
@@ -269,7 +269,7 @@ export default function Appointments() {
                     <td className="py-4 px-5">
                       <select
                         value={apt.status}
-                        onChange={(e) => updateMutation.mutate({ id: apt.id, data: { status: e.target.value } })}
+                        onChange={(e) => updateMutation.mutate({ id: apt.id || apt._id, data: { status: e.target.value } })}
                         className={`px-3 py-1 rounded-full text-xs font-bold border-0 outline-none cursor-pointer uppercase ${
                           statusColor[apt.status] || statusColor.scheduled
                         }`}
@@ -298,7 +298,7 @@ export default function Appointments() {
                     <td className="py-4 px-5">
                       <button
                         onClick={() => {
-                          if (window.confirm('Delete this appointment?')) deleteMutation.mutate(apt.id);
+                          if (window.confirm('Delete this appointment?')) deleteMutation.mutate(apt.id || apt._id);
                         }}
                         className="p-2 hover:bg-red-100 rounded-lg text-red-500"
                         title="Delete"

@@ -27,7 +27,7 @@ function DoctorModal({ onClose, editData }) {
   const [photo, setPhoto] = useState(null);
 
   const mutation = useMutation({
-    mutationFn: (data) => (editData ? doctorsAPI.update(editData.id, data) : doctorsAPI.create(data)),
+    mutationFn: (data) => (editData ? doctorsAPI.update(editData.id || editData._id, data) : doctorsAPI.create(data)),
     onSuccess: () => {
       toast.success(editData ? 'Doctor updated!' : 'Doctor registered successfully!');
       qc.invalidateQueries({ queryKey: ['doctors'] });
@@ -210,7 +210,7 @@ export default function Doctors() {
                   </button>
                   <button
                     onClick={() => {
-                      if (window.confirm(`Delete Dr. ${doc.name}?`)) deleteMutation.mutate(doc.id);
+                      if (window.confirm(`Delete Dr. ${doc.name}?`)) deleteMutation.mutate(doc.id || doc._id);
                     }}
                     className="p-1.5 hover:bg-red-50 rounded-lg text-red-500"
                     title="Delete Doctor"
@@ -226,7 +226,7 @@ export default function Doctors() {
 
       {showModal && (
         <DoctorModal
-          key={editData?.id || 'new'}
+          key={(editData?.id || editData?._id) || 'new'}
           onClose={() => setShowModal(false)}
           editData={editData}
         />

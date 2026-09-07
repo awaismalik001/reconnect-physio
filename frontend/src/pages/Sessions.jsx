@@ -141,7 +141,7 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
             >
               <option value="">No appointment — enter details manually</option>
               {appointments?.filter((a) => a.status === 'scheduled').map((a) => (
-                <option key={a.id} value={a.id}>
+                <option key={a.id || a._id} value={a.id || a._id}>
                   {a.patient?.name} — Dr. {a.doctor?.name} — {format(new Date(a.date), 'MMM d')} at {a.time}
                 </option>
               ))}
@@ -152,15 +152,15 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
           <div className="grid grid-cols-2 gap-4">
             <FormSelect label="Patient *" value={patientId} onChange={(e) => setPatientId(e.target.value)}>
               <option value="">Select Patient</option>
-              {patients?.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+              {patients?.map((p) => <option key={p.id || p._id} value={p.id || p._id}>{p.name}</option>)}
             </FormSelect>
             <FormSelect label="Doctor *" value={doctorId} onChange={(e) => setDoctorId(e.target.value)}>
               <option value="">Select Doctor</option>
-              {doctors?.map((d) => <option key={d.id} value={d.id}>Dr. {d.name}</option>)}
+              {doctors?.map((d) => <option key={d.id || d._id} value={d.id || d._id}>Dr. {d.name}</option>)}
             </FormSelect>
             <FormSelect label="Therapy Type" value={therapyTypeId} onChange={(e) => setTherapyTypeId(e.target.value)}>
               <option value="">Select Type</option>
-              {therapyTypes?.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+              {therapyTypes?.map((t) => <option key={t.id || t._id} value={t.id || t._id}>{t.name}</option>)}
             </FormSelect>
             <div className="grid grid-cols-2 gap-2">
               <FormField label="Date *" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
@@ -222,7 +222,7 @@ function MarkPaidModal({ session, onClose }) {
   const [paymentMethod, setPaymentMethod] = useState('cash');
 
   const mutation = useMutation({
-    mutationFn: () => sessionsAPI.markPaid(session.id, { paymentMethod }),
+    mutationFn: () => sessionsAPI.markPaid(session.id || session._id, { paymentMethod }),
     onSuccess: () => {
       toast.success('Credit cleared! Payment recorded as income.');
       qc.invalidateQueries({ queryKey: ['sessions'] });
@@ -387,7 +387,7 @@ export default function Sessions() {
                           </button>
                         )}
                         <button
-                          onClick={() => { if (window.confirm('Delete this session? The finance record will also be removed.')) deleteMutation.mutate(s.id); }}
+                          onClick={() => { if (window.confirm('Delete this session? The finance record will also be removed.')) deleteMutation.mutate(s.id || s._id); }}
                           className="p-2 hover:bg-red-100 rounded-lg text-red-500"
                         >
                           <Trash2 className="w-4 h-4" />

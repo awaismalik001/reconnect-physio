@@ -3,6 +3,7 @@ const Session      = require('../models/Session');
 const Finance      = require('../models/Finance');
 const Appointment  = require('../models/Appointment');
 const TherapyType  = require('../models/TherapyType');
+const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -36,7 +37,7 @@ const getAllSessions = async (req, res) => {
     const financeMap = Object.fromEntries(finances.map((f) => [String(f.sessionId), f]));
 
     const result = sessions.map((s) => ({
-      ...s,
+      ...formatDoc(s),
       financeRecord: financeMap[String(s._id)] || null,
     }));
 
@@ -67,7 +68,7 @@ const getSessionById = async (req, res) => {
 
     if (!session) return res.status(404).json({ message: 'Session not found.' });
 
-    res.json({ ...session, financeRecord });
+    res.json({ ...formatDoc(session), financeRecord });
   } catch (error) {
     console.error('Get session error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -138,7 +139,7 @@ const createSession = async (req, res) => {
       await Appointment.findByIdAndUpdate(appointmentId, { status: 'completed', sessionId: session._id });
     }
 
-    res.status(201).json({ message: 'Session recorded successfully.', session, financeRecord });
+    res.status(201).json({ message: 'Session recorded successfully.', session: formatDoc(session), financeRecord });
   } catch (error) {
     console.error('Create session error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -191,7 +192,7 @@ const updateSession = async (req, res) => {
       );
     }
 
-    res.json({ message: 'Session updated successfully.', session });
+    res.json({ message: 'Session updated successfully.', session: formatDoc(session) });
   } catch (error) {
     console.error('Update session error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -262,7 +263,7 @@ const markSessionPaid = async (req, res) => {
 const getTherapyTypes = async (req, res) => {
   try {
     const types = await TherapyType.find().sort({ name: 1 }).lean();
-    res.json(types);
+    res.json(formatDocs(types));
   } catch (error) {
     console.error('Get therapy types error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -277,7 +278,7 @@ const createTherapyType = async (req, res) => {
     if (!name) return res.status(400).json({ message: 'name is required.' });
 
     const type = await TherapyType.create({ name, description: description || '' });
-    res.status(201).json({ message: 'Therapy type created.', type });
+    res.status(201).json({ message: 'Therapy type created.', type: formatDoc(type) });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ message: 'A therapy type with this name already exists.' });

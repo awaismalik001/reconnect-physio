@@ -1,5 +1,6 @@
 const mongoose    = require('mongoose');
 const Appointment = require('../models/Appointment');
+const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -31,7 +32,7 @@ const getAllAppointments = async (req, res) => {
       .sort({ date: 1, time: 1 })
       .lean();
 
-    res.json(appointments);
+    res.json(formatDocs(appointments));
   } catch (error) {
     console.error('Get appointments error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -55,7 +56,7 @@ const getTodayAppointments = async (req, res) => {
       .sort({ time: 1 })
       .lean();
 
-    res.json(appointments);
+    res.json(formatDocs(appointments));
   } catch (error) {
     console.error('Get today appointments error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -84,7 +85,7 @@ const createAppointment = async (req, res) => {
       { path: 'doctorId',  select: 'name' },
     ]);
 
-    res.status(201).json({ message: 'Appointment booked successfully.', appointment });
+    res.status(201).json({ message: 'Appointment booked successfully.', appointment: formatDoc(appointment) });
   } catch (error) {
     console.error('Create appointment error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -117,7 +118,7 @@ const updateAppointment = async (req, res) => {
 
     if (!appointment) return res.status(404).json({ message: 'Appointment not found.' });
 
-    res.json({ message: 'Appointment updated successfully.', appointment });
+    res.json({ message: 'Appointment updated successfully.', appointment: formatDoc(appointment) });
   } catch (error) {
     console.error('Update appointment error:', error);
     res.status(500).json({ message: 'Server error.' });

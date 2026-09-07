@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const path      = require('path');
 const fs        = require('fs/promises');
 const Doctor    = require('../models/Doctor');
+const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -24,7 +25,32 @@ async function deleteFile(filename) {
 const getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find().sort({ createdAt: -1 }).lean();
-    res.json(doctors);
+
+    const Patient     = require('../models/Patient');
+    const Appointment = require('../models/Appointment');
+    const Session     = require('../models/Session');
+
+    const doctorIds = doctors.map((d) => d._id);
+    const [patientCounts, apptCounts, sessionCounts] = await Promise.all([
+      Patient.aggregate([{ $match: { doctorId: { $in: doctorIds } } }, { $group: { _id: '$doctorId', count: { $sum: 1 } } }]),
+      Appointment.aggregate([{ $match: { doctorId: { $in: doctorIds } } }, { $group: { _id: '$doctorId', count: { $sum: 1 } } }]),
+      Session.aggregate([{ $match: { doctorId: { $in: doctorIds } } }, { $group: { _id: '$doctorId', count: { $sum: 1 } } }]),
+    ]);
+
+    const pMap = Object.fromEntries(patientCounts.map((c) => [String(c._id), c.count]));
+    const aMap = Object.fromEntries(apptCounts.map((c) => [String(c._id), c.count]));
+    const sMap = Object.fromEntries(sessionCounts.map((c) => [String(c._id), c.count]));
+
+    const formatted = formatDocs(doctors).map((d) => ({
+      ...d,
+      _count: {
+        patients: pMap[String(d.id)] || 0,
+        appointments: aMap[String(d.id)] || 0,
+        sessions: sMap[String(d.id)] || 0,
+      },
+    }));
+
+    res.json(formatted);
   } catch (error) {
     console.error('Get doctors error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -62,7 +88,12 @@ const getDoctorById = async (req, res) => {
 
     if (!doctor) return res.status(404).json({ message: 'Doctor not found.' });
 
-    res.json({ ...doctor, patients, appointments, sessions });
+    res.json({
+      ...formatDoc(doctor),
+      patients: formatDocs(patients),
+      appointments: formatDocs(appointments),
+      sessions: formatDocs(sessions),
+    });
   } catch (error) {
     console.error('Get doctor error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -87,7 +118,7 @@ const createDoctor = async (req, res) => {
     const photo  = req.file ? req.file.filename : null;
     const doctor = await Doctor.create({ name, specialization, phone, email, photo });
 
-    res.status(201).json({ message: 'Doctor created successfully.', doctor });
+    res.status(201).json({ message: 'Doctor created successfully.', doctor: formatDoc(doctor) });
   } catch (error) {
     console.error('Create doctor error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -119,7 +150,7 @@ const updateDoctor = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    res.json({ message: 'Doctor updated successfully.', doctor });
+    res.json({ message: 'Doctor updated successfully.', doctor: formatDoc(doctor) });
   } catch (error) {
     console.error('Update doctor error:', error);
     res.status(500).json({ message: 'Server error.' });

@@ -3,6 +3,7 @@ const path       = require('path');
 const fs         = require('fs/promises');
 const Patient    = require('../models/Patient');
 const Document   = require('../models/Document');
+const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -41,7 +42,30 @@ const getAllPatients = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    res.json(patients);
+    const Session     = require('../models/Session');
+    const Appointment = require('../models/Appointment');
+
+    const patientIds = patients.map((p) => p._id);
+    const [sessionCounts, apptCounts, docCounts] = await Promise.all([
+      Session.aggregate([{ $match: { patientId: { $in: patientIds } } }, { $group: { _id: '$patientId', count: { $sum: 1 } } }]),
+      Appointment.aggregate([{ $match: { patientId: { $in: patientIds } } }, { $group: { _id: '$patientId', count: { $sum: 1 } } }]),
+      Document.aggregate([{ $match: { patientId: { $in: patientIds } } }, { $group: { _id: '$patientId', count: { $sum: 1 } } }]),
+    ]);
+
+    const sMap = Object.fromEntries(sessionCounts.map((c) => [String(c._id), c.count]));
+    const aMap = Object.fromEntries(apptCounts.map((c) => [String(c._id), c.count]));
+    const dMap = Object.fromEntries(docCounts.map((c) => [String(c._id), c.count]));
+
+    const formatted = formatDocs(patients).map((p) => ({
+      ...p,
+      _count: {
+        sessions: sMap[String(p.id)] || 0,
+        appointments: aMap[String(p.id)] || 0,
+        documents: dMap[String(p.id)] || 0,
+      },
+    }));
+
+    res.json(formatted);
   } catch (error) {
     console.error('Get patients error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -80,7 +104,14 @@ const getPatientById = async (req, res) => {
 
     if (!patient) return res.status(404).json({ message: 'Patient not found.' });
 
-    res.json({ ...patient, sessions, appointments, documents, finances });
+    const formattedPatient = formatDoc(patient);
+    res.json({
+      ...formattedPatient,
+      sessions: formatDocs(sessions),
+      appointments: formatDocs(appointments),
+      documents: formatDocs(documents),
+      finances: formatDocs(finances),
+    });
   } catch (error) {
     console.error('Get patient error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -129,7 +160,7 @@ const createPatient = async (req, res) => {
 
     await patient.populate(['doctorId', 'therapyTypeIds']);
 
-    res.status(201).json({ message: 'Patient created successfully.', patient });
+    res.status(201).json({ message: 'Patient created successfully.', patient: formatDoc(patient) });
   } catch (error) {
     console.error('Create patient error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -186,7 +217,7 @@ const updatePatient = async (req, res) => {
       new: true, runValidators: true,
     }).populate(['doctorId', 'therapyTypeIds']);
 
-    res.json({ message: 'Patient updated successfully.', patient });
+    res.json({ message: 'Patient updated successfully.', patient: formatDoc(patient) });
   } catch (error) {
     console.error('Update patient error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -244,7 +275,7 @@ const uploadDocument = async (req, res) => {
       fileSize:     req.file.size,
     });
 
-    res.status(201).json({ message: 'Document uploaded successfully.', document });
+    res.status(201).json({ message: 'Document uploaded successfully.', document: formatDoc(document) });
   } catch (error) {
     console.error('Upload document error:', error);
     res.status(500).json({ message: 'Server error.' });

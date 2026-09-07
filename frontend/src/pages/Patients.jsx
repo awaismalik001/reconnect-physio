@@ -48,7 +48,9 @@ function PatientModal({ onClose, editData, doctors }) {
   const [diagnosis, setDiagnosis] = useState(editData?.diagnosis || '');
   const [emergencyContact, setEmergencyContact] = useState(editData?.emergencyContact || '');
   const [emergencyPhone, setEmergencyPhone] = useState(editData?.emergencyPhone || '');
-  const [doctorId, setDoctorId] = useState(editData?.doctorId || '');
+  const [doctorId, setDoctorId] = useState(
+    editData?.doctorId?._id || editData?.doctorId?.id || editData?.doctorId || editData?.doctor?._id || editData?.doctor?.id || ''
+  );
   const [totalSessions, setTotalSessions] = useState(editData?.totalSessions || '');
   const [startDate, setStartDate] = useState(editData?.startDate ? editData.startDate.split('T')[0] : '');
   const [endDate, setEndDate] = useState(editData?.endDate ? editData.endDate.split('T')[0] : '');
@@ -56,7 +58,7 @@ function PatientModal({ onClose, editData, doctors }) {
 
   const mutation = useMutation({
     mutationFn: (data) =>
-      editData ? patientsAPI.update(editData.id, data) : patientsAPI.create(data),
+      editData ? patientsAPI.update(editData.id || editData._id, data) : patientsAPI.create(data),
     onSuccess: () => {
       toast.success(editData ? 'Patient updated!' : 'Patient added!');
       qc.invalidateQueries({ queryKey: ['patients'] });
@@ -370,7 +372,7 @@ export default function Patients() {
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={() => navigate(`/patients/${p.id}`)}
+                          onClick={() => navigate(`/patients/${p.id || p._id}`)}
                           className="p-2 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors"
                           title="View Details"
                         >
@@ -384,7 +386,7 @@ export default function Patients() {
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(p.id, p.name)}
+                          onClick={() => handleDelete(p.id || p._id, p.name)}
                           className="p-2 hover:bg-red-100 rounded-lg text-red-500 transition-colors"
                           title="Delete Patient"
                         >
@@ -403,7 +405,7 @@ export default function Patients() {
       {/* Modal */}
       {showModal && (
         <PatientModal
-          key={editData?.id || 'new'}
+          key={(editData?.id || editData?._id) || 'new'}
           onClose={() => setShowModal(false)}
           editData={editData}
           doctors={doctors}
