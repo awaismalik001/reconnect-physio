@@ -62,6 +62,10 @@ function AppointmentModal({ onClose, patients, doctors }) {
     if (!patientId || !doctorId || !date || !time) {
       return toast.error('Please select patient, doctor, date and time.');
     }
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (date < todayStr) {
+      return toast.error('Appointment date cannot be before today.');
+    }
     mutation.mutate({ patientId, doctorId, date, time, notes });
   };
 
@@ -95,6 +99,7 @@ function AppointmentModal({ onClose, patients, doctors }) {
               label="Date *"
               type="date"
               value={date}
+              min={new Date().toISOString().split('T')[0]}
               onChange={(e) => setDate(e.target.value)}
               required
             />

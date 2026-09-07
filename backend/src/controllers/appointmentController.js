@@ -1,5 +1,7 @@
 const mongoose    = require('mongoose');
 const Appointment = require('../models/Appointment');
+const Patient     = require('../models/Patient');
+const Doctor      = require('../models/Doctor');
 const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -76,8 +78,28 @@ const createAppointment = async (req, res) => {
       return res.status(400).json({ message: 'Invalid patientId or doctorId.' });
     }
 
+    // Validate date cannot be before today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const apptDate = new Date(date);
+    if (apptDate < today) {
+      return res.status(400).json({ message: 'Appointment date cannot be in the past.' });
+    }
+
+    // Fetch patient and doctor to store names directly in database
+    const [patient, doctor] = await Promise.all([
+      Patient.findById(patientId),
+      Doctor.findById(doctorId),
+    ]);
+
     const appointment = await Appointment.create({
-      patientId, doctorId, date: new Date(date), time, notes: notes || '',
+      patientId,
+      patientName: patient ? patient.name : '',
+      doctorId,
+      doctorName:  doctor ? doctor.name : '',
+      date: apptDate,
+      time,
+      notes: notes || '',
     });
 
     await appointment.populate([
@@ -103,9 +125,25 @@ const updateAppointment = async (req, res) => {
     const { patientId, doctorId, date, time, status, notes } = req.body;
 
     const update = {};
-    if (patientId && isValidId(patientId)) update.patientId = patientId;
-    if (doctorId  && isValidId(doctorId))  update.doctorId  = doctorId;
-    if (date)   update.date   = new Date(date);
+    if (patientId && isValidId(patientId)) {
+      update.patientId = patientId;
+      const p = await Patient.findById(patientId);
+      if (p) update.patientName = p.name;
+    }
+    if (doctorId && isValidId(doctorId)) {
+      update.doctorId = doctorId;
+      const d = await Doctor.findById(doctorId);
+      if (d) update.doctorName = d.name;
+    }
+    if (date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const apptDate = new Date(date);
+      if (apptDate < today) {
+        return res.status(400).json({ message: 'Appointment date cannot be in the past.' });
+      }
+      update.date = apptDate;
+    }
     if (time)   update.time   = time;
     if (status) update.status = status;
     if (notes !== undefined) update.notes = notes;

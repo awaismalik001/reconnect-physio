@@ -102,6 +102,10 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
     if (!patientId || !doctorId || !date || !duration) {
       return toast.error('Please fill Patient, Doctor, Date and Duration.');
     }
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (date < todayStr) {
+      return toast.error('Session date cannot be before today.');
+    }
     mutation.mutate({
       patientId, doctorId, therapyTypeId: therapyTypeId || undefined,
       appointmentId: appointmentId || undefined,
@@ -163,7 +167,7 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
               {therapyTypes?.map((t) => <option key={t.id || t._id} value={t.id || t._id}>{t.name}</option>)}
             </FormSelect>
             <div className="grid grid-cols-2 gap-2">
-              <FormField label="Date *" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <FormField label="Date *" type="date" value={date} min={new Date().toISOString().split('T')[0]} onChange={(e) => setDate(e.target.value)} required />
               <FormField label="Duration (min) *" type="number" placeholder="60" value={duration} onChange={(e) => setDuration(e.target.value)} required min="1" />
             </div>
           </div>

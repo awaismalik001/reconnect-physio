@@ -3,6 +3,8 @@ const Session      = require('../models/Session');
 const Finance      = require('../models/Finance');
 const Appointment  = require('../models/Appointment');
 const TherapyType  = require('../models/TherapyType');
+const Patient      = require('../models/Patient');
+const Doctor       = require('../models/Doctor');
 const { formatDoc, formatDocs } = require('../utils/format');
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -92,22 +94,40 @@ const createSession = async (req, res) => {
       return res.status(400).json({ message: 'Invalid patientId or doctorId.' });
     }
 
+    // Validate that session date cannot be in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sessionDate = new Date(date);
+    if (sessionDate < today) {
+      return res.status(400).json({ message: 'Session date cannot be in the past.' });
+    }
+
     const amount = parseFloat(paymentAmount) || 0;
     const status = paymentStatus || 'pending';
 
+    // Fetch related docs to save human-readable names directly in MongoDB
+    const [patient, doctor, therapyType] = await Promise.all([
+      Patient.findById(patientId),
+      Doctor.findById(doctorId),
+      therapyTypeId && isValidId(therapyTypeId) ? TherapyType.findById(therapyTypeId) : null,
+    ]);
+
     const session = await Session.create({
       patientId,
+      patientName:     patient ? patient.name : '',
       doctorId,
-      therapyTypeId: therapyTypeId && isValidId(therapyTypeId) ? therapyTypeId : null,
-      appointmentId: appointmentId && isValidId(appointmentId) ? appointmentId : null,
-      date:          new Date(date),
-      duration:      parseInt(duration),
-      notes:         notes     || '',
-      progress:      progress  || '',
-      nextSteps:     nextSteps || '',
-      paymentAmount: amount,
-      paymentMethod: paymentMethod || 'cash',
-      paymentStatus: status,
+      doctorName:      doctor ? doctor.name : '',
+      therapyTypeId:   therapyTypeId && isValidId(therapyTypeId) ? therapyTypeId : null,
+      therapyTypeName: therapyType ? therapyType.name : '',
+      appointmentId:   appointmentId && isValidId(appointmentId) ? appointmentId : null,
+      date:            sessionDate,
+      duration:        parseInt(duration),
+      notes:           notes     || '',
+      progress:        progress  || '',
+      nextSteps:       nextSteps || '',
+      paymentAmount:   amount,
+      paymentMethod:   paymentMethod || 'cash',
+      paymentStatus:   status,
     });
 
     await session.populate([
@@ -125,8 +145,9 @@ const createSession = async (req, res) => {
         amount,
         paymentMethod: status === 'paid' ? (paymentMethod || 'cash') : null,
         category:      'session',
-        description:   `${status === 'credit' ? '[CREDIT] ' : ''}Session - ${session.patientId.name}`,
-        patientId:     session.patientId._id,
+        description:   `${status === 'credit' ? '[CREDIT] ' : ''}Session - ${patient ? patient.name : ''}`,
+        patientId:     session.patientId._id || session.patientId,
+        patientName:   patient ? patient.name : '',
         sessionId:     session._id,
         isPaid:        status === 'paid',
         paidAt:        status === 'paid' ? new Date() : null,
@@ -161,11 +182,33 @@ const updateSession = async (req, res) => {
     } = req.body;
 
     const update = {};
-    if (patientId     && isValidId(patientId))     update.patientId     = patientId;
-    if (doctorId      && isValidId(doctorId))      update.doctorId      = doctorId;
-    if (therapyTypeId !== undefined) update.therapyTypeId = therapyTypeId && isValidId(therapyTypeId) ? therapyTypeId : null;
+    if (patientId && isValidId(patientId)) {
+      update.patientId = patientId;
+      const p = await Patient.findById(patientId);
+      if (p) update.patientName = p.name;
+    }
+    if (doctorId && isValidId(doctorId)) {
+      update.doctorId = doctorId;
+      const d = await Doctor.findById(doctorId);
+      if (d) update.doctorName = d.name;
+    }
+    if (therapyTypeId !== undefined) {
+      update.therapyTypeId = therapyTypeId && isValidId(therapyTypeId) ? therapyTypeId : null;
+      if (therapyTypeId) {
+        const t = await TherapyType.findById(therapyTypeId);
+        if (t) update.therapyTypeName = t.name;
+      }
+    }
     if (appointmentId !== undefined) update.appointmentId = appointmentId && isValidId(appointmentId) ? appointmentId : null;
-    if (date)          update.date          = new Date(date);
+    if (date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const sessionDate = new Date(date);
+      if (sessionDate < today) {
+        return res.status(400).json({ message: 'Session date cannot be in the past.' });
+      }
+      update.date = sessionDate;
+    }
     if (duration)      update.duration      = parseInt(duration);
     if (notes         !== undefined) update.notes      = notes;
     if (progress      !== undefined) update.progress   = progress;

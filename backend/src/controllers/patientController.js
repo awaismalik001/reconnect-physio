@@ -141,6 +141,12 @@ const createPatient = async (req, res) => {
       parsedTherapyIds = ids.filter(isValidId);
     }
 
+    let dName = '';
+    if (doctorId && isValidId(doctorId)) {
+      const doc = await require('../models/Doctor').findById(doctorId);
+      if (doc) dName = doc.name;
+    }
+
     const patient = await Patient.create({
       name,
       age:             parseInt(age),
@@ -151,6 +157,7 @@ const createPatient = async (req, res) => {
       emergencyContact: emergencyContact || '',
       emergencyPhone:   emergencyPhone   || '',
       doctorId:        doctorId && isValidId(doctorId) ? doctorId : null,
+      doctorName:      dName,
       totalSessions:   totalSessions ? parseInt(totalSessions) : 0,
       startDate:       startDate ? new Date(startDate) : null,
       endDate:         endDate   ? new Date(endDate)   : null,
@@ -201,7 +208,15 @@ const updatePatient = async (req, res) => {
     if (diagnosis       !== undefined) update.diagnosis       = diagnosis;
     if (emergencyContact !== undefined) update.emergencyContact = emergencyContact;
     if (emergencyPhone  !== undefined) update.emergencyPhone  = emergencyPhone;
-    if (doctorId        !== undefined) update.doctorId        = doctorId && isValidId(doctorId) ? doctorId : null;
+    if (doctorId !== undefined) {
+      update.doctorId = doctorId && isValidId(doctorId) ? doctorId : null;
+      if (update.doctorId) {
+        const doc = await require('../models/Doctor').findById(update.doctorId);
+        update.doctorName = doc ? doc.name : '';
+      } else {
+        update.doctorName = '';
+      }
+    }
     if (totalSessions   !== undefined) update.totalSessions   = parseInt(totalSessions);
     if (startDate       !== undefined) update.startDate       = startDate ? new Date(startDate) : null;
     if (endDate         !== undefined) update.endDate         = endDate   ? new Date(endDate)   : null;
@@ -211,6 +226,16 @@ const updatePatient = async (req, res) => {
     if (therapyTypeIds !== undefined) {
       const ids = Array.isArray(therapyTypeIds) ? therapyTypeIds : JSON.parse(therapyTypeIds);
       update.therapyTypeIds = ids.filter(isValidId);
+    }
+
+    // If patient name changed, cascade name change to appointments, sessions, finances, documents
+    if (name && name !== existingPatient.name) {
+      await Promise.all([
+        require('../models/Appointment').updateMany({ patientId: req.params.id }, { patientName: name }),
+        require('../models/Session').updateMany({ patientId: req.params.id }, { patientName: name }),
+        require('../models/Finance').updateMany({ patientId: req.params.id }, { patientName: name }),
+        require('../models/Document').updateMany({ patientId: req.params.id }, { patientName: name }),
+      ]);
     }
 
     const patient = await Patient.findByIdAndUpdate(req.params.id, update, {
@@ -269,6 +294,7 @@ const uploadDocument = async (req, res) => {
 
     const document = await Document.create({
       patientId:    req.params.id,
+      patientName:  patient.name,
       filename:     req.file.filename,
       originalName: req.file.originalname,
       fileType:     req.file.mimetype,

@@ -175,6 +175,12 @@ const createFinanceRecord = async (req, res) => {
       return res.status(400).json({ message: 'type, amount, category and description are required.' });
     }
 
+    let pName = '';
+    if (patientId && isValidId(patientId)) {
+      const p = await require('../models/Patient').findById(patientId);
+      if (p) pName = p.name;
+    }
+
     const record = await Finance.create({
       type,
       amount:        parseFloat(amount),
@@ -182,6 +188,7 @@ const createFinanceRecord = async (req, res) => {
       category,
       description,
       patientId:     patientId && isValidId(patientId) ? patientId : null,
+      patientName:   pName,
       isPaid:        type === 'income',
       paidAt:        type === 'income' ? new Date() : null,
       date:          date ? new Date(date) : new Date(),

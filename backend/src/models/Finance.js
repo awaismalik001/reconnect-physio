@@ -8,6 +8,7 @@ const FinanceSchema = new mongoose.Schema(
     category:      { type: String, required: true, trim: true },
     description:   { type: String, required: true, trim: true },
     patientId:     { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', default: null },
+    patientName:   { type: String, default: '' },
     sessionId:     { type: mongoose.Schema.Types.ObjectId, ref: 'Session', default: null, unique: true, sparse: true },
     isPaid:        { type: Boolean, default: false },
     paidAt:        { type: Date,    default: null },
