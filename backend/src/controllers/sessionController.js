@@ -160,7 +160,11 @@ const createSession = async (req, res) => {
       await Appointment.findByIdAndUpdate(appointmentId, { status: 'completed', sessionId: session._id });
     }
 
-    res.status(201).json({ message: 'Session recorded successfully.', session: formatDoc(session), financeRecord });
+    res.status(201).json({
+      message: 'Session recorded successfully.',
+      session: formatDoc(session),
+      financeRecord: formatDoc(financeRecord),
+    });
   } catch (error) {
     console.error('Create session error:', error);
     res.status(500).json({ message: 'Server error.' });

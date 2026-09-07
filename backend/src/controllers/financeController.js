@@ -249,7 +249,23 @@ const deleteFinanceRecord = async (req, res) => {
     const record = await Finance.findByIdAndDelete(req.params.id);
     if (!record) return res.status(404).json({ message: 'Finance record not found.' });
 
-    res.json({ message: 'Finance record deleted.' });
+    // If this finance record is linked to a session, also delete that session
+    if (record.sessionId) {
+      await Session.findByIdAndDelete(record.sessionId);
+    } else if (record.patientId) {
+      // If no direct sessionId, delete matching session for this patient on this date
+      const dateStart = new Date(record.date);
+      dateStart.setHours(0, 0, 0, 0);
+      const dateEnd = new Date(record.date);
+      dateEnd.setHours(23, 59, 59, 999);
+
+      await Session.deleteMany({
+        patientId: record.patientId,
+        date: { $gte: dateStart, $lte: dateEnd },
+      });
+    }
+
+    res.json({ message: 'Finance record and associated session deleted successfully.' });
   } catch (error) {
     console.error('Delete finance error:', error);
     res.status(500).json({ message: 'Server error.' });

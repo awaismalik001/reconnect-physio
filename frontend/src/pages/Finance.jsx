@@ -289,10 +289,12 @@ export default function Finance() {
   const deleteMutation = useMutation({
     mutationFn: financeAPI.delete,
     onSuccess: () => {
-      toast.success('Record deleted.');
+      toast.success('Finance record and associated session deleted.');
       qc.invalidateQueries({ queryKey: ['finance'] });
       qc.invalidateQueries({ queryKey: ['finance-summary'] });
       qc.invalidateQueries({ queryKey: ['finance-credits'] });
+      qc.invalidateQueries({ queryKey: ['sessions'] });
+      qc.invalidateQueries({ queryKey: ['patients'] });
     },
   });
 
@@ -573,7 +575,7 @@ export default function Finance() {
                             )}
                             <button
                               onClick={() => {
-                                if (window.confirm('Delete this finance entry?')) deleteMutation.mutate(r.id || r._id);
+                                if (window.confirm('Delete this finance entry? Any associated session will also be removed.')) deleteMutation.mutate(r.id || r._id);
                               }}
                               className="p-1.5 hover:bg-red-100 rounded-lg text-red-500"
                             >
