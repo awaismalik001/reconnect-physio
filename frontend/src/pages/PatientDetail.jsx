@@ -116,7 +116,7 @@ export default function PatientDetail() {
   return (
     <Layout>
       {/* Top Navigation */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <button
           onClick={() => navigate('/patients')}
           className="flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-blue-700 transition-colors"
@@ -126,7 +126,7 @@ export default function PatientDetail() {
 
         <button
           onClick={handleDownloadInvoice}
-          className="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-800 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-800 transition-all shadow-sm w-full sm:w-auto"
         >
           <Download className="w-4 h-4" /> Download Official PDF Invoice
         </button>
@@ -134,7 +134,7 @@ export default function PatientDetail() {
 
       {/* Credit Balance Alert if patient owes money */}
       {totalCreditOwed > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-between shadow-sm">
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-700 flex-shrink-0">
               <CreditCard className="w-5 h-5" />
@@ -150,7 +150,7 @@ export default function PatientDetail() {
           </div>
           <button
             onClick={() => navigate('/finance')}
-            className="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl hover:bg-amber-700 shadow-sm"
+            className="w-full sm:w-auto px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl hover:bg-amber-700 shadow-sm text-center"
           >
             Collect in Finance →
           </button>
@@ -158,23 +158,23 @@ export default function PatientDetail() {
       )}
 
       {/* Patient Header Card */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 mb-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 w-full lg:w-auto">
             {patient.photo ? (
               <img
                 src={`/uploads/${patient.photo}`}
                 alt={patient.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-blue-100 shadow-sm"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-blue-100 shadow-sm flex-shrink-0"
               />
             ) : (
-              <div className="w-20 h-20 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center font-black text-2xl">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center font-black text-2xl flex-shrink-0">
                 {patient.name?.[0]?.toUpperCase()}
               </div>
             )}
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black text-gray-800">{patient.name}</h1>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-800">{patient.name}</h1>
                 <span
                   className={`px-3 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
                     paymentBadge[patient.paymentStatus] || paymentBadge.pending
@@ -193,20 +193,20 @@ export default function PatientDetail() {
           </div>
 
           {/* 3 Quick Metric Boxes */}
-          <div className="grid grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 w-full lg:w-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 w-full lg:w-auto">
             <div>
               <p className="text-[10px] text-gray-400 font-bold uppercase">Assigned Doctor</p>
               <p className="text-xs font-black text-gray-800 mt-0.5">
                 {patient.doctor?.name ? `Dr. ${patient.doctor.name}` : 'Unassigned'}
               </p>
             </div>
-            <div className="border-l border-gray-200 pl-4">
+            <div className="border-t sm:border-t-0 sm:border-l border-gray-200 pt-2 sm:pt-0 sm:pl-4">
               <p className="text-[10px] text-gray-400 font-bold uppercase">Sessions Done</p>
               <p className="text-xs font-black text-blue-700 mt-0.5">
                 {patient.sessions?.length || 0} / {patient.totalSessions || '—'}
               </p>
             </div>
-            <div className="border-l border-gray-200 pl-4">
+            <div className="border-t sm:border-t-0 sm:border-l border-gray-200 pt-2 sm:pt-0 sm:pl-4">
               <p className="text-[10px] text-gray-400 font-bold uppercase">Total Cleared</p>
               <p className="text-xs font-black text-emerald-600 mt-0.5">
                 PKR {totalPaid.toLocaleString()}
@@ -377,7 +377,7 @@ export default function PatientDetail() {
               <p className="text-xs text-gray-400 text-center py-6">No financial transactions recorded.</p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-xs">
+                <table className="w-full min-w-[550px] text-xs">
                   <thead className="bg-slate-50 text-gray-600">
                     <tr>
                       <th className="py-2.5 px-3 text-left font-semibold">Date</th>

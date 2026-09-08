@@ -68,21 +68,21 @@ export default function Settings() {
 
   return (
     <Layout>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Settings</h1>
-        <p className="text-gray-500 mt-1">Manage your admin account and credentials</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Settings</h1>
+        <p className="text-gray-500 text-sm mt-1">Manage your admin account and credentials</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
         {/* Admin Profile Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
-              <User className="w-8 h-8 text-blue-600" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <User className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" />
             </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-800">{admin?.name}</h2>
-              <p className="text-sm text-gray-500">{admin?.email}</p>
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-gray-800 truncate">{admin?.name}</h2>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{admin?.email}</p>
               <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">
                 <ShieldCheck className="w-3.5 h-3.5" /> Administrator
               </span>
@@ -91,14 +91,14 @@ export default function Settings() {
         </div>
 
         {/* Change Password Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
               <Lock className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-800">Change Password</h2>
-              <p className="text-sm text-gray-400">Update your account login password</p>
+              <p className="text-xs sm:text-sm text-gray-400">Update your account login password</p>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={mutation.isPending}
-                className="px-8 py-3 bg-blue-700 text-white font-semibold rounded-xl hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm"
+                className="w-full sm:w-auto px-8 py-3 bg-blue-700 text-white font-semibold rounded-xl hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm text-center"
               >
                 {mutation.isPending ? 'Updating Password...' : 'Save New Password'}
               </button>

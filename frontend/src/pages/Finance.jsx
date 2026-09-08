@@ -133,7 +133,7 @@ function FinanceModal({ onClose, patients }) {
             min="1"
           />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormSelect label="Category" value={category} onChange={(e) => setCategory(e.target.value)}>
               {categories.map((c) => (
                 <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -172,18 +172,18 @@ function FinanceModal({ onClose, patients }) {
 
           <FormField label="Date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
-          <div className="flex justify-end gap-3 pt-3 border-t">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-3 border-t">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md text-center"
             >
               {mutation.isPending ? 'Saving...' : 'Save Record'}
             </button>
@@ -303,21 +303,21 @@ export default function Finance() {
   return (
     <Layout>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Financial Management</h1>
-          <p className="text-gray-500 mt-1">Track clinic revenues, operational expenses & patient credit balances</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Financial Management</h1>
+          <p className="text-gray-500 text-sm mt-1">Track clinic revenues, operational expenses & patient credit balances</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md"
+          className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" /> Add Record
         </button>
       </div>
 
       {/* Period selector */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {PERIODS.map((p) => (
           <button
             key={p}
@@ -332,7 +332,7 @@ export default function Finance() {
       </div>
 
       {/* 4 Financial Stat Cards (Income, Expenses, Net Profit, Outstanding Credit) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -458,9 +458,9 @@ export default function Finance() {
       {tab === 'credits' ? (
         /* ── Outstanding Credits Table ── */
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-4 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+          <div className="p-4 bg-amber-50 border-b border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
+              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
               <h3 className="font-bold text-sm text-amber-900">Patient Receivables & Outstanding Credit</h3>
             </div>
             <span className="text-xs font-bold text-amber-800">
@@ -476,7 +476,7 @@ export default function Finance() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[700px] text-sm">
                 <thead className="bg-slate-50 text-gray-600 text-xs">
                   <tr>
                     <th className="text-left py-3.5 px-4 font-semibold">Patient</th>
@@ -521,7 +521,7 @@ export default function Finance() {
             <div className="p-12 text-center text-gray-400">No finance transactions found.</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[700px] text-sm">
                 <thead className="bg-blue-50 text-blue-900 text-xs">
                   <tr>
                     <th className="text-left py-4 px-4 font-semibold">Type</th>

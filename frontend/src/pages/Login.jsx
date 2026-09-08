@@ -29,9 +29,9 @@ export default function Login() {
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-700 to-blue-600 px-8 py-10 text-center">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Activity className="w-9 h-9 text-blue-700" />
+          <div className="bg-gradient-to-r from-blue-700 to-blue-600 px-6 sm:px-8 py-8 sm:py-10 text-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Activity className="w-8 h-8 sm:w-9 sm:h-9 text-blue-700" />
             </div>
             <h1 className="text-2xl font-bold text-white">Reconnect</h1>
             <p className="text-blue-200 text-sm mt-1">Physiotherapy Center</p>
@@ -39,7 +39,7 @@ export default function Login() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="px-8 py-8 space-y-5">
+          <form onSubmit={handleSubmit} className="px-6 sm:px-8 py-6 sm:py-8 space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Email Address

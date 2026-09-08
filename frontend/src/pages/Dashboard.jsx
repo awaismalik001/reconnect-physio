@@ -63,21 +63,21 @@ export default function Dashboard() {
       {/* Header */}
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-800 tracking-tight">Dashboard Overview</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">Dashboard Overview</h1>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">
             Real-time clinic activity, treatment schedules & financial metrics
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap gap-2">
           <button
             onClick={() => navigate('/sessions')}
-            className="px-4 py-2 bg-blue-700 text-white rounded-xl text-xs font-bold hover:bg-blue-800 shadow-sm"
+            className="flex-1 sm:flex-none px-4 py-2.5 bg-blue-700 text-white rounded-xl text-xs font-bold hover:bg-blue-800 shadow-sm transition-colors text-center"
           >
             + Record Session
           </button>
           <button
             onClick={() => navigate('/appointments')}
-            className="px-4 py-2 bg-white text-blue-700 border border-blue-200 rounded-xl text-xs font-bold hover:bg-blue-50"
+            className="flex-1 sm:flex-none px-4 py-2.5 bg-white text-blue-700 border border-blue-200 rounded-xl text-xs font-bold hover:bg-blue-50 transition-colors text-center"
           >
             + Book Appointment
           </button>
@@ -86,7 +86,7 @@ export default function Dashboard() {
 
       {/* Credit Alert Bar if credit is outstanding */}
       {hasCredit && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-between shadow-sm">
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
               <AlertCircle className="w-5 h-5 text-amber-700" />
@@ -102,7 +102,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => navigate('/finance')}
-            className="flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-200 px-3.5 py-2 rounded-xl hover:bg-amber-300 transition-colors"
+            className="flex items-center justify-center gap-1 text-xs font-bold text-amber-900 bg-amber-200 px-3.5 py-2 rounded-xl hover:bg-amber-300 transition-colors w-full sm:w-auto"
           >
             Collect in Finance <ArrowRight className="w-3.5 h-3.5" />
           </button>
@@ -110,7 +110,7 @@ export default function Dashboard() {
       )}
 
       {/* 4 Main Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
         <StatCard
           label="Total Patients"
           value={summary?.totalPatients || 0}
@@ -244,8 +244,8 @@ export default function Dashboard() {
         {recentPatients.length === 0 ? (
           <p className="text-gray-400 text-xs text-center py-6">No patient records yet.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+          <div className="overflow-x-auto -mx-6 sm:mx-0 px-6 sm:px-0">
+            <table className="w-full min-w-[550px] text-xs">
               <thead className="bg-slate-50 text-gray-600">
                 <tr>
                   <th className="text-left py-3 px-3 font-semibold">Patient Name</th>

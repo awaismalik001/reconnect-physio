@@ -98,18 +98,18 @@ function DoctorModal({ onClose, editData }) {
               className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
             />
           </div>
-          <div className="flex justify-end gap-3 pt-3 border-t">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-3 border-t">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md text-center"
             >
               {mutation.isPending ? 'Saving...' : editData ? 'Update Profile' : 'Save Doctor'}
             </button>
@@ -141,14 +141,14 @@ export default function Doctors() {
 
   return (
     <Layout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Doctors & Therapists</h1>
-          <p className="text-gray-500 mt-1">{doctors.length} specialist{doctors.length !== 1 ? 's' : ''} on staff</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Doctors & Therapists</h1>
+          <p className="text-gray-500 text-sm mt-1">{doctors.length} specialist{doctors.length !== 1 ? 's' : ''} on staff</p>
         </div>
         <button
           onClick={() => { setEditData(null); setShowModal(true); }}
-          className="flex items-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md"
+          className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" /> Add Doctor
         </button>
@@ -163,7 +163,7 @@ export default function Doctors() {
           <p className="text-xs text-gray-400 mt-1">Add your team of therapists and doctors here.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
           {doctors.map((doc) => (
             <div
               key={doc.id}

@@ -100,8 +100,8 @@ function PatientModal({ onClose, editData, doctors }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               label="Full Name *"
               type="text"
@@ -131,7 +131,7 @@ function PatientModal({ onClose, editData, doctors }) {
               required
               placeholder="e.g. 03001234567"
             />
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <FormField
                 label="Address"
                 type="text"
@@ -140,7 +140,7 @@ function PatientModal({ onClose, editData, doctors }) {
                 placeholder="e.g. House 12, Street 5, Lahore"
               />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <FormField
                 label="Diagnosis *"
                 type="text"
@@ -195,7 +195,7 @@ function PatientModal({ onClose, editData, doctors }) {
               onChange={(e) => setEndDate(e.target.value)}
             />
 
-            <div>
+            <div className="col-span-1 sm:col-span-2">
               <label className="block text-xs font-semibold text-gray-600 mb-1">Patient Photo</label>
               <input
                 type="file"
@@ -209,18 +209,18 @@ function PatientModal({ onClose, editData, doctors }) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-6 border-t mt-6">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 transition-colors shadow-md"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 transition-colors shadow-md text-center"
             >
               {mutation.isPending ? 'Saving...' : editData ? 'Update Patient' : 'Add Patient'}
             </button>
@@ -280,14 +280,14 @@ export default function Patients() {
   return (
     <Layout>
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Patients</h1>
-          <p className="text-gray-500 mt-1">{patients.length} total patient{patients.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Patients</h1>
+          <p className="text-gray-500 text-sm mt-1">{patients.length} total patient{patients.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 transition-colors shadow-md"
+          className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 transition-colors shadow-md w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" /> Add Patient
         </button>
@@ -317,7 +317,7 @@ export default function Patients() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[700px] text-sm">
               <thead className="bg-blue-50">
                 <tr>
                   <th className="text-left py-4 px-5 font-semibold text-blue-800">Patient</th>

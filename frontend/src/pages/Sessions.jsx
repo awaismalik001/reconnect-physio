@@ -153,7 +153,7 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
           </div>
 
           {/* STEP 2: Patient & Doctor */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormSelect label="Patient *" value={patientId} onChange={(e) => setPatientId(e.target.value)}>
               <option value="">Select Patient</option>
               {patients?.map((p) => <option key={p.id || p._id} value={p.id || p._id}>{p.name}</option>)}
@@ -166,7 +166,7 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
               <option value="">Select Type</option>
               {therapyTypes?.map((t) => <option key={t.id || t._id} value={t.id || t._id}>{t.name}</option>)}
             </FormSelect>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <FormField label="Date *" type="date" value={date} min={new Date().toISOString().split('T')[0]} onChange={(e) => setDate(e.target.value)} required />
               <FormField label="Duration (min) *" type="number" placeholder="60" value={duration} onChange={(e) => setDuration(e.target.value)} required min="1" />
             </div>
@@ -175,7 +175,7 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
           {/* STEP 3: Payment — Simplified */}
           <div className="border border-gray-200 rounded-xl p-4 bg-gray-50">
             <p className="text-xs font-bold text-gray-600 mb-3 uppercase tracking-wide">💳 Payment Details</p>
-            <div className="grid grid-cols-3 gap-3 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
               <FormField label="Amount (PKR)" type="number" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} min="0" />
               <FormSelect label="Payment Status" value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)}>
                 <option value="paid">✅ Paid</option>
@@ -206,11 +206,11 @@ function SessionModal({ onClose, patients, doctors, therapyTypes, appointments }
           <FormTextarea label="Patient Progress" value={progress} onChange={(e) => setProgress(e.target.value)} placeholder="How is the patient improving?" />
           <FormTextarea label="Next Steps / Homework" value={nextSteps} onChange={(e) => setNextSteps(e.target.value)} placeholder="What should happen next..." />
 
-          <div className="flex justify-end gap-3 pt-2 border-t">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2 border-t">
+            <button type="button" onClick={onClose} className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 text-center">
               Cancel
             </button>
-            <button type="submit" disabled={mutation.isPending} className="px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md">
+            <button type="submit" disabled={mutation.isPending} className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md text-center">
               {mutation.isPending ? 'Saving...' : 'Save Session'}
             </button>
           </div>
@@ -300,19 +300,19 @@ export default function Sessions() {
 
   return (
     <Layout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Sessions</h1>
-          <p className="text-gray-500 mt-1">{sessions.length} session{sessions.length !== 1 ? 's' : ''} recorded</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Sessions</h1>
+          <p className="text-gray-500 text-sm mt-1">{sessions.length} session{sessions.length !== 1 ? 's' : ''} recorded</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md">
+        <button onClick={() => setShowModal(true)} className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md w-full sm:w-auto">
           <Plus className="w-4 h-4" /> Record Session
         </button>
       </div>
 
       {/* Credit Alert Banner */}
       {creditCount > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
             <div>
@@ -320,17 +320,17 @@ export default function Sessions() {
               <p className="text-xs text-red-500">Total owed: PKR {creditTotal.toLocaleString()} — Click "Clear" on any session to collect payment.</p>
             </div>
           </div>
-          <button onClick={() => setFilterStatus('credit')} className="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1.5 rounded-lg hover:bg-red-200">
+          <button onClick={() => setFilterStatus('credit')} className="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1.5 rounded-lg hover:bg-red-200 w-full sm:w-auto text-center">
             Show Credits
           </button>
         </div>
       )}
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         {[['', 'All Sessions'], ['paid', '✅ Paid'], ['credit', '🔴 Credit'], ['pending', '⏳ Pending']].map(([val, label]) => (
           <button key={val} onClick={() => setFilterStatus(val)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${filterStatus === val ? 'bg-blue-700 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-400'}`}>
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors ${filterStatus === val ? 'bg-blue-700 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-400'}`}>
             {label}
           </button>
         ))}
@@ -347,7 +347,7 @@ export default function Sessions() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[750px] text-sm">
               <thead className="bg-blue-50">
                 <tr>
                   <th className="text-left py-4 px-4 font-semibold text-blue-800">Patient</th>

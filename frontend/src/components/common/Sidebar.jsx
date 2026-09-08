@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserRound, CalendarDays,
-  ClipboardList, DollarSign, LogOut, Activity, Settings,
+  ClipboardList, DollarSign, LogOut, Activity, Settings, X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,13 +15,17 @@ const navItems = [
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { logout, admin } = useAuth();
 
   return (
-    <div className="fixed top-0 left-0 h-screen w-64 bg-blue-800 text-white flex flex-col z-50 shadow-xl">
-      {/* Logo */}
-      <div className="px-6 py-6 border-b border-blue-700">
+    <div
+      className={`fixed top-0 left-0 h-screen w-64 bg-blue-800 text-white flex flex-col z-50 shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
+      {/* Logo & Mobile Close */}
+      <div className="px-6 py-5 border-b border-blue-700 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
             <Activity className="w-6 h-6 text-blue-700" />
@@ -31,6 +35,14 @@ export default function Sidebar() {
             <p className="text-blue-300 text-xs">Physiotherapy Center</p>
           </div>
         </div>
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          className="lg:hidden p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-700 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -40,6 +52,7 @@ export default function Sidebar() {
             key={to}
             to={to}
             end={to === '/'}
+            onClick={() => onClose && onClose()}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive

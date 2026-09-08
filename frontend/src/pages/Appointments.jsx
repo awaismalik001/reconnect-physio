@@ -94,7 +94,7 @@ function AppointmentModal({ onClose, patients, doctors }) {
             ))}
           </FormSelect>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormField
               label="Date *"
               type="date"
@@ -123,18 +123,18 @@ function AppointmentModal({ onClose, patients, doctors }) {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-3 border-t">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 shadow-md text-center"
             >
               {mutation.isPending ? 'Booking...' : 'Confirm Booking'}
             </button>
@@ -193,21 +193,21 @@ export default function Appointments() {
   return (
     <Layout>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Appointments</h1>
-          <p className="text-gray-500 mt-1">Schedule patient visits and convert them into completed therapy sessions</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Appointments</h1>
+          <p className="text-gray-500 text-sm mt-1">Schedule patient visits and convert them into completed therapy sessions</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md"
+          className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-blue-800 shadow-md w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" /> Book Appointment
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {[
           ['', 'All Bookings'],
           ['scheduled', '📅 Scheduled'],
@@ -240,7 +240,7 @@ export default function Appointments() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[700px] text-sm">
               <thead className="bg-blue-50 text-blue-900 text-xs">
                 <tr>
                   <th className="text-left py-4 px-5 font-semibold">Patient</th>
