@@ -353,7 +353,7 @@ export default function Patients() {
                       </div>
                     </td>
                     <td className="py-4 px-5 text-gray-600">{p.phone}</td>
-                    <td className="py-4 px-5 text-gray-500 max-w-[180px]">
+                    <td className="py-4 px-5 text-gray-500 max-w-[240px]">
                       <p className="truncate" title={p.diagnosis}>{p.diagnosis}</p>
                     </td>
                     <td className="py-4 px-5 text-gray-600">

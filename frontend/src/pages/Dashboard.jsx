@@ -13,17 +13,17 @@ function StatCard({ label, value, icon: Icon, color, sub, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4 transition-all ${
+      className={`bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-3.5 transition-all ${
         onClick ? 'cursor-pointer hover:shadow-md hover:border-blue-200' : ''
       }`}
     >
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-        <Icon className="w-6 h-6 text-white" />
+      <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+        <Icon className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">{label}</p>
-        <p className="text-2xl font-black text-gray-800 mt-1 truncate">{value}</p>
-        {sub && <p className="text-xs text-gray-400 mt-1 truncate">{sub}</p>}
+        <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">{label}</p>
+        <p className="text-lg sm:text-xl font-extrabold text-gray-800 mt-0.5 leading-tight">{value}</p>
+        {sub && <p className="text-[11px] text-gray-400 mt-0.5 truncate">{sub}</p>}
       </div>
     </div>
   );

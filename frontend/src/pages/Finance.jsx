@@ -333,52 +333,52 @@ export default function Finance() {
 
       {/* 4 Financial Stat Cards (Income, Expenses, Net Profit, Outstanding Credit) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center gap-3 mb-2.5">
             <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <span className="text-xs font-bold uppercase text-gray-500">Total Income</span>
+            <span className="text-[11px] font-bold uppercase text-gray-500 tracking-wider">Total Income</span>
           </div>
-          <p className="text-2xl font-black text-emerald-600">PKR {(summary?.totalIncome || 0).toLocaleString()}</p>
-          <p className="text-xs text-gray-400 mt-1">Cleared revenue ({period})</p>
+          <p className="text-lg sm:text-xl font-extrabold text-emerald-600 leading-tight">PKR {(summary?.totalIncome || 0).toLocaleString()}</p>
+          <p className="text-[11px] text-gray-400 mt-1">Cleared revenue ({period})</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center gap-3 mb-2.5">
             <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
               <TrendingDown className="w-5 h-5 text-red-500" />
             </div>
-            <span className="text-xs font-bold uppercase text-gray-500">Total Expenses</span>
+            <span className="text-[11px] font-bold uppercase text-gray-500 tracking-wider">Total Expenses</span>
           </div>
-          <p className="text-2xl font-black text-red-500">PKR {(summary?.totalExpenses || 0).toLocaleString()}</p>
-          <p className="text-xs text-gray-400 mt-1">Operational costs ({period})</p>
+          <p className="text-lg sm:text-xl font-extrabold text-red-500 leading-tight">PKR {(summary?.totalExpenses || 0).toLocaleString()}</p>
+          <p className="text-[11px] text-gray-400 mt-1">Operational costs ({period})</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center gap-3 mb-2.5">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-blue-600" />
             </div>
-            <span className="text-xs font-bold uppercase text-gray-500">Net Profit</span>
+            <span className="text-[11px] font-bold uppercase text-gray-500 tracking-wider">Net Profit</span>
           </div>
-          <p className={`text-2xl font-black ${(summary?.netProfit || 0) >= 0 ? 'text-blue-700' : 'text-red-600'}`}>
+          <p className={`text-lg sm:text-xl font-extrabold leading-tight ${(summary?.netProfit || 0) >= 0 ? 'text-blue-700' : 'text-red-600'}`}>
             PKR {(summary?.netProfit || 0).toLocaleString()}
           </p>
-          <p className="text-xs text-gray-400 mt-1">Income minus expenses</p>
+          <p className="text-[11px] text-gray-400 mt-1">Income minus expenses</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-amber-200 bg-amber-50/20">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-amber-200 bg-amber-50/20">
+          <div className="flex items-center gap-3 mb-2.5">
             <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
               <CreditCard className="w-5 h-5 text-amber-600" />
             </div>
-            <span className="text-xs font-bold uppercase text-amber-800">Outstanding Credit</span>
+            <span className="text-[11px] font-bold uppercase text-amber-800 tracking-wider">Outstanding Credit</span>
           </div>
-          <p className="text-2xl font-black text-amber-600">
+          <p className="text-lg sm:text-xl font-extrabold text-amber-600 leading-tight">
             PKR {(summary?.totalCreditOutstanding || 0).toLocaleString()}
           </p>
-          <p className="text-xs text-amber-700 mt-1">
+          <p className="text-[11px] text-amber-700 mt-1">
             {summary?.creditCount || 0} unpaid session(s) owed
           </p>
         </div>
